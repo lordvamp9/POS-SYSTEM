@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(vamp9_pos
-    VERSION 1.0.0
+    VERSION 3.0.0
     DESCRIPTION "vamp9 POS - Commercial Offline-First Supermarket Point of Sale System"
     LANGUAGES CXX
 )

@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     QCoreApplication::setOrganizationName(QStringLiteral("vamp9"));
     QCoreApplication::setApplicationName(QStringLiteral("vamp9 POS"));
-    QCoreApplication::setApplicationVersion(QStringLiteral("1.0.0"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("3.0.0"));
 
     // Initialize bilingual translator before instantiating views
     vamp9::pos::presentation::TranslationManager::instance().applyLanguage(
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     auto logger = std::make_shared<vamp9::pos::infrastructure::Logger>(
         writableRoot / "logs" / "vamp9_pos.log"
     );
-    logger->info("Bootstrapping vamp9 POS v1.0.0 (Offline-First C++20 / Qt6)...");
+    logger->info("Bootstrapping vamp9 POS v3.0.0 (Offline-First C++20 / Qt6)...");
 
     // 2. Local SQLite3 Database (WAL mode + Idempotent SQL Migrations)
     auto dbManager = std::make_shared<vamp9::pos::infrastructure::DatabaseManager>(

@@ -6,7 +6,7 @@
 ; ==============================================================================
 
 #define MyAppName      "vamp9 POS"
-#define MyAppVersion   "1.0.0"
+#define MyAppVersion   "3.0.0"
 #define MyAppPublisher "vamp9"
 #define MyAppURL       "https://github.com/lordvamp9/Sistema-Ventas"
 #define MyAppExeName   "vamp9_pos.exe"
