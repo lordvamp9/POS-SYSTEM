@@ -1,0 +1,623 @@
+/* ============================================================================
+ * vamp9 POS — Commercial Retail Dark Theme (Odoo POS / GK Software / NCR Dark)
+ * Clean high-contrast dark slate surfaces (#0B1120 / #1E293B) with corporate blue
+ * ============================================================================ */
+
+* {
+    font-family: "Segoe UI", "Inter", "SF Pro Display", sans-serif;
+    color: #F1F5F9;
+    outline: none;
+}
+
+QMainWindow,
+QWidget#centralCanvas,
+QWidget#workspaceContainer,
+QWidget#catalogGridContainer,
+QScrollArea#catalogScrollArea {
+    background: transparent;
+}
+
+QDialog, QMessageBox {
+    background-color: #1E293B;
+    color: #F1F5F9;
+}
+
+/* ----------------------------------------------------------------------------
+ * Commercial Dark TopBar
+ * ---------------------------------------------------------------------------- */
+QFrame#topBar {
+    background-color: #1E293B;
+    border: none;
+    border-bottom: 1px solid #334155;
+}
+
+QLabel#brandTitle {
+    font-size: 16px;
+    font-weight: 800;
+    color: #F8FAFC;
+    letter-spacing: -0.2px;
+}
+
+QFrame#topBarDivider {
+    color: #334155;
+}
+
+QPushButton[topTab="true"] {
+    background-color: transparent;
+    color: #94A3B8;
+    border: none;
+    border-bottom: 2.5px solid transparent;
+    border-radius: 0px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+QPushButton[topTab="true"]:hover {
+    color: #F8FAFC;
+    background-color: #263348;
+}
+
+QPushButton[topTab="true"]:checked {
+    color: #60A5FA;
+    background-color: #263348;
+    border-bottom: 2.5px solid #3B82F6;
+    font-weight: 700;
+}
+
+/* ScaleWidget Capsule (Dark) */
+QFrame#scaleCapsule {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 8px;
+}
+
+QLabel#scalePrefixLabel {
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8;
+}
+
+QLabel#scaleValueLabel {
+    font-family: "Segoe UI", "Inter", sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #F8FAFC;
+}
+
+QLabel#scaleValueLabel[hasWeight="true"] {
+    color: #38BDF8;
+}
+
+QLabel#scaleUnitLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94A3B8;
+    padding-top: 2px;
+}
+
+QPushButton#scaleActionBtn {
+    background-color: #1E293B;
+    color: #E2E8F0;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+QPushButton#scaleActionBtn:hover {
+    background-color: #1D4ED8;
+    color: #FFFFFF;
+    border-color: #3B82F6;
+}
+
+QLineEdit#topSearchInput {
+    background-color: #0F172A;
+    color: #F8FAFC;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
+QLineEdit#topSearchInput:focus {
+    background-color: #0F172A;
+    border: 1.5px solid #3B82F6;
+}
+
+QLabel#cashierAvatar {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #2563EB, stop:1 #4338CA);
+    color: #FFFFFF;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+QLabel#cashierNameLabel {
+    color: #E2E8F0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+QPushButton#settingsGearBtn {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0px;
+}
+
+QPushButton#settingsGearBtn:hover {
+    background-color: #263348;
+    border: 1px solid #475569;
+}
+
+QPushButton#settingsGearBtn:checked {
+    background-color: #1E3A8A;
+    border: 1.5px solid #3B82F6;
+}
+
+/* ----------------------------------------------------------------------------
+ * Dark Surface Panels
+ * ---------------------------------------------------------------------------- */
+QFrame[surface="panel"],
+QFrame[glass="panel"] {
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 12px;
+}
+
+QFrame[glass="card"] {
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 10px;
+}
+
+QFrame[glass="accent-card"] {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 10px;
+}
+
+QLabel#settingsTitle {
+    font-size: 20px;
+    font-weight: 800;
+    color: #F8FAFC;
+}
+
+QLabel#sectionTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #F8FAFC;
+}
+
+QLabel#mutedText {
+    font-size: 12px;
+    color: #94A3B8;
+}
+
+QLabel[pill="status-neutral"] {
+    background-color: #0F172A;
+    color: #CBD5E1;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QLabel[pill="status-ok"] {
+    background-color: #1E3A8A;
+    color: #BFDBFE;
+    border: 1px solid #2563EB;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+QListWidget#ticketList {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+QLabel#summaryMutedLabel {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #94A3B8;
+}
+
+QLabel#summarySubValue {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E2E8F0;
+}
+
+QFrame#summaryDivider {
+    color: #334155;
+    max-height: 1px;
+}
+
+QLabel#totalCaptionLabel {
+    font-size: 15px;
+    font-weight: 700;
+    color: #E2E8F0;
+}
+
+QLabel#totalAmountLabel {
+    font-size: 26px;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+
+QLabel#numpadStatusLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: #60A5FA;
+}
+
+/* ----------------------------------------------------------------------------
+ * Quick Actions & Settings Choice Buttons (Dark)
+ * ---------------------------------------------------------------------------- */
+QPushButton[variant="quick-action"] {
+    background-color: #0F172A;
+    color: #E2E8F0;
+    border: 1px solid #334155;
+    border-bottom: 2px solid #020617;
+    border-radius: 8px;
+    min-height: 36px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+QPushButton[variant="quick-action"]:hover {
+    background-color: #263348;
+    border-color: #475569;
+}
+
+QPushButton[variant="quick-action"]:checked {
+    background-color: #1E3A8A;
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+    border-bottom: 2px solid #2563EB;
+}
+
+QPushButton[variant="quick-danger"] {
+    background-color: #0F172A;
+    color: #FCA5A5;
+    border: 1px solid #7F1D1D;
+    border-bottom: 2px solid #450A0A;
+    border-radius: 8px;
+    min-height: 36px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+QPushButton[variant="quick-danger"]:hover {
+    background-color: #450A0A;
+    color: #FECACA;
+}
+
+QPushButton[settingChoice="true"] {
+    background-color: #0F172A;
+    color: #CBD5E1;
+    border: 1.5px solid #334155;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+}
+
+QPushButton[settingChoice="true"]:hover {
+    background-color: #263348;
+    border-color: #475569;
+    color: #FFFFFF;
+}
+
+QPushButton[settingChoice="true"]:checked {
+    background-color: #1E3A8A;
+    color: #FFFFFF;
+    border: 2px solid #3B82F6;
+}
+
+/* ----------------------------------------------------------------------------
+ * Solid Pay CTA & Physical Tactile Numpad (Dark)
+ * ---------------------------------------------------------------------------- */
+QPushButton[variant="pay-cta"] {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #2563EB, stop:1 #4338CA);
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+    border-bottom: 3px solid #312E81;
+    border-radius: 10px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+QPushButton[variant="pay-cta"]:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1D4ED8, stop:1 #3730A3);
+}
+
+QPushButton[variant="pay-cta"]:pressed {
+    background: #312E81;
+    border-bottom: 1px solid #312E81;
+}
+
+QPushButton[numpad="digit"] {
+    background-color: #0F172A;
+    color: #F8FAFC;
+    border: 1px solid #334155;
+    border-bottom: 2px solid #020617;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+QPushButton[numpad="digit"]:hover {
+    background-color: #263348;
+}
+
+QPushButton[numpad="digit"]:pressed {
+    background-color: #020617;
+}
+
+QPushButton[numpad="util"] {
+    background-color: #162032;
+    color: #CBD5E1;
+    border: 1px solid #334155;
+    border-bottom: 2px solid #020617;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+QPushButton[numpad="mode"] {
+    background-color: #162032;
+    color: #CBD5E1;
+    border: 1px solid #334155;
+    border-bottom: 2px solid #020617;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+QPushButton[numpad="mode"]:hover {
+    background-color: #263348;
+    color: #FFFFFF;
+}
+
+QPushButton[numpad="mode"]:checked {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+    border-bottom: 2px solid #1E40AF;
+}
+
+QPushButton[numpad="backspace"] {
+    background-color: #450A0A;
+    color: #FCA5A5;
+    border: 1px solid #7F1D1D;
+    border-bottom: 2px solid #2A0606;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+QPushButton[numpad="backspace"]:hover {
+    background-color: #7F1D1D;
+    color: #FFFFFF;
+}
+
+/* ----------------------------------------------------------------------------
+ * Right Panel: Categories & Product Cards (Dark)
+ * ---------------------------------------------------------------------------- */
+QFrame#categoryNavBar {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 10px;
+}
+
+QPushButton#homeBreadcrumbBtn {
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 7px;
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 30px;
+    max-height: 30px;
+}
+
+QPushButton#homeBreadcrumbBtn:hover {
+    background-color: #263348;
+    border-color: #3B82F6;
+}
+
+QLabel#breadcrumbChevron {
+    color: #64748B;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+QPushButton[categoryPill="true"] {
+    background-color: #1E293B;
+    color: #CBD5E1;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+QPushButton[categoryPill="true"]:hover {
+    background-color: #263348;
+    color: #FFFFFF;
+}
+
+QPushButton[categoryPill="true"]:checked {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+}
+
+/* Dark ProductCardWidget with clean bright photo tray so white packshots look crisp */
+QFrame#productCard {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 10px;
+}
+
+QFrame#productCard:hover {
+    background-color: #162032;
+    border: 1px solid #475569;
+}
+
+QFrame#productCard[pressed="true"] {
+    background-color: #1E293B;
+    border: 1.5px solid #3B82F6;
+}
+
+QWidget#productPhotoZone {
+    background-color: #FFFFFF;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+}
+
+QLabel#weightBadge {
+    background-color: #DBEAFE;
+    color: #1D4ED8;
+    border: 1px solid #93C5FD;
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+QLabel#productCardName {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #F1F5F9;
+}
+
+QLabel#productCardPrice {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #60A5FA;
+}
+
+/* ----------------------------------------------------------------------------
+ * Shared Buttons, Inputs, Spinboxes, Tables & Scrollbars (Dark)
+ * ---------------------------------------------------------------------------- */
+QPushButton[variant="primary"] {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    border: 1px solid #3B82F6;
+    border-bottom: 2px solid #1E40AF;
+    border-radius: 8px;
+    min-height: 42px;
+    padding: 8px 18px;
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+QPushButton[variant="primary"]:hover {
+    background-color: #1D4ED8;
+}
+
+QPushButton[variant="glass"] {
+    background-color: #0F172A;
+    color: #E2E8F0;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    min-height: 42px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+QPushButton[variant="glass"]:hover {
+    background-color: #263348;
+    border-color: #475569;
+}
+
+QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox {
+    background-color: #0F172A;
+    color: #F8FAFC;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    min-height: 38px;
+    padding: 0 12px;
+    font-size: 13.5px;
+}
+
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus {
+    border: 1.5px solid #3B82F6;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #1E293B;
+    color: #F1F5F9;
+    selection-background-color: #2563EB;
+}
+
+QLabel#kpiValue {
+    font-size: 26px;
+    font-weight: 800;
+    color: #F8FAFC;
+}
+
+QLabel#kpiLabel {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #94A3B8;
+}
+
+QTableWidget {
+    background-color: #0F172A;
+    alternate-background-color: #162032;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    gridline-color: #1E293B;
+    font-size: 13px;
+    selection-background-color: #1E3A8A;
+    selection-color: #FFFFFF;
+}
+
+QTableWidget::item {
+    padding: 8px 10px;
+    border: none;
+}
+
+QHeaderView::section {
+    background-color: #1E293B;
+    color: #CBD5E1;
+    border: none;
+    border-bottom: 1px solid #334155;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+    margin: 4px 1px 4px 1px;
+}
+
+QScrollBar::handle:vertical {
+    background: #475569;
+    border-radius: 4px;
+    min-height: 28px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #64748B;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}

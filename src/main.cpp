@@ -1,74 +1,145 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <QQmlContext>
-#include "backend/POSController.hpp"
-#include "backend/InventorySystem.hpp"
-#include "backend/SettingsManager.hpp"
-#include "backend/DatabaseManager.hpp"
-#include <QFontDatabase>
-#include <QFont>
-#include <QFile>
-#include <QTextStream>
-#include <QDateTime>
-#include <iostream>
+#include "application/CartService.h"
+#include "application/SyncWorker.h"
+#include "infrastructure/hardware/MockReceiptPrinter.h"
+#include "infrastructure/logging/Logger.h"
+#include "infrastructure/persistence/DatabaseManager.h"
+#include "infrastructure/persistence/SqliteProductRepository.h"
+#include "presentation/MainWindow.h"
+#include "presentation/utils/AppPreferences.h"
+#include "presentation/utils/TranslationManager.h"
 
-void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-    QFile outFile("vamp9pos_debug_log.txt");
-    if (outFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        QTextStream ts(&outFile);
-        QString typeStr;
-        switch (type) {
-        case QtDebugMsg: typeStr = "DEBUG"; break;
-        case QtInfoMsg: typeStr = "INFO"; break;
-        case QtWarningMsg: typeStr = "WARNING"; break;
-        case QtCriticalMsg: typeStr = "CRITICAL"; break;
-        case QtFatalMsg: typeStr = "FATAL"; break;
-        }
-        ts << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz")
-           << " [" << typeStr << "] " << msg << "\n";
+#include <QApplication>
+#include <QDir>
+#include <QFile>
+#include <QGuiApplication>
+#include <QIcon>
+#include <QMessageBox>
+#include <QStandardPaths>
+#include <QTextStream>
+
+#include <chrono>
+#include <filesystem>
+#include <memory>
+
+namespace {
+
+[[nodiscard]] std::filesystem::path resolveRuntimePath(const std::filesystem::path& relativePath) {
+    const std::filesystem::path appDir = QCoreApplication::applicationDirPath().toStdString();
+    const std::filesystem::path nextToBinary = appDir / relativePath;
+    if (std::filesystem::exists(nextToBinary)) {
+        return nextToBinary;
     }
+    return std::filesystem::current_path() / relativePath;
 }
 
-int main(int argc, char *argv[])
-{
-    // Force Basic style to allow text field backgrounds and borders to customize correctly
-    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
+[[nodiscard]] std::filesystem::path resolveWritableDataRoot() {
+    const QString standardDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    if (!standardDir.isEmpty()) {
+        QDir().mkpath(standardDir);
+        return std::filesystem::path(standardDir.toStdString());
+    }
+    return std::filesystem::path(QCoreApplication::applicationDirPath().toStdString());
+}
 
-    // Clean log file for the new session
-    QFile::remove("vamp9pos_debug_log.txt");
+void applyStylesheet(QApplication& app, vamp9::pos::infrastructure::Logger& logger) {
+    const bool isDark = vamp9::pos::presentation::AppPreferences::instance().isDark();
+    const std::string primaryFile = isDark ? "dark.qss" : "main.qss";
+    auto qssPath = resolveRuntimePath(std::filesystem::path("assets") / "styles" / primaryFile);
+    if (!std::filesystem::exists(qssPath)) {
+        qssPath = resolveRuntimePath(std::filesystem::path("assets") / "styles" / "main.qss");
+    }
 
-    qInstallMessageHandler(myMessageHandler);
+    QFile file(QString::fromStdString(qssPath.string()));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        logger.warn("Unable to load QSS stylesheet from: " + qssPath.string());
+        return;
+    }
 
-    QGuiApplication app(argc, argv);
+    QTextStream in(&file);
+    app.setStyleSheet(in.readAll());
+    logger.info("Loaded retail QSS theme from: " + qssPath.string());
+}
 
-    QFontDatabase::addApplicationFont(":/vamp9/Vamp9POS/src/assets/fonts/Inter-Regular.ttf");
-    QFontDatabase::addApplicationFont(":/vamp9/Vamp9POS/src/assets/fonts/Inter-Bold.ttf");
-    QFontDatabase::addApplicationFont(":/vamp9/Vamp9POS/src/assets/fonts/Inter-SemiBold.ttf");
-    QFont defaultFont("Inter");
-    QGuiApplication::setFont(defaultFont);
+} // namespace
 
-    // Initialize database connection first
-    DatabaseManager::instance();
+int main(int argc, char* argv[]) {
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(
+        Qt::HighDpiScaleFactorRoundingPolicy::PassThrough
+    );
 
-    POSController posController;
-    InventorySystem inventorySystem;
-    SettingsManager settingsManager;
-    settingsManager.loadSettings(); // load from sqlite
+    QApplication app(argc, argv);
+    QCoreApplication::setOrganizationName(QStringLiteral("vamp9"));
+    QCoreApplication::setApplicationName(QStringLiteral("vamp9 POS"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("1.0.0"));
 
-    QQmlApplicationEngine engine;
-    
-    engine.rootContext()->setContextProperty("posController", &posController);
-    engine.rootContext()->setContextProperty("inventorySystem", &inventorySystem);
-    engine.rootContext()->setContextProperty("settingsManager", &settingsManager);
+    // Initialize bilingual translator before instantiating views
+    vamp9::pos::presentation::TranslationManager::instance().applyLanguage(
+        vamp9::pos::presentation::AppPreferences::instance().language()
+    );
 
-    const QUrl url(u"qrc:/vamp9/Vamp9POS/src/frontend/main.qml"_qs);
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
-    engine.load(url);
+    const auto brandIconPath = resolveRuntimePath(std::filesystem::path("assets") / "icons" / "vamp9_brand.png");
+    if (std::filesystem::exists(brandIconPath)) {
+        app.setWindowIcon(QIcon(QString::fromStdString(brandIconPath.string())));
+    }
 
-    return app.exec();
+    const std::filesystem::path writableRoot = resolveWritableDataRoot();
+
+    // 1. Local File Logger (user writable AppData directory for UAC-safe Program Files installs)
+    auto logger = std::make_shared<vamp9::pos::infrastructure::Logger>(
+        writableRoot / "logs" / "vamp9_pos.log"
+    );
+    logger->info("Bootstrapping vamp9 POS v1.0.0 (Offline-First C++20 / Qt6)...");
+
+    // 2. Local SQLite3 Database (WAL mode + Idempotent SQL Migrations)
+    auto dbManager = std::make_shared<vamp9::pos::infrastructure::DatabaseManager>(
+        writableRoot / "data" / "vamp9_pos.db"
+    );
+    const auto migrationsDir = resolveRuntimePath(std::filesystem::path("database") / "migrations");
+    if (const auto initRes = dbManager->initialize(migrationsDir); !initRes) {
+        logger->error("Database initialization failed: " + initRes.error().message);
+        QMessageBox::critical(
+            nullptr,
+            QStringLiteral("Database Initialization Error"),
+            QString::fromStdString(initRes.error().message)
+        );
+        return 1;
+    }
+    logger->info("SQLite initialized with journal_mode=" + dbManager->activeJournalMode());
+
+    // 3. Composition Root (Dependency Injection)
+    auto productRepository = std::make_shared<vamp9::pos::infrastructure::SqliteProductRepository>(dbManager);
+    auto receiptPrinter = std::make_shared<vamp9::pos::infrastructure::MockReceiptPrinter>(logger);
+    auto cartService = std::make_shared<vamp9::pos::application::CartService>(productRepository);
+
+    // 4. Offline-First Outbox Background Worker (RAII clean shutdown)
+    auto syncWorker = std::make_unique<vamp9::pos::application::SyncWorker>(
+        std::chrono::seconds(15),
+        [logger](const std::string& msg) { logger->info(msg); }
+    );
+    syncWorker->start();
+
+    // 5. Presentation Layer (Commercial Retail UI)
+    applyStylesheet(app, *logger);
+
+    const auto printerStatus = receiptPrinter->status();
+    vamp9::pos::presentation::MainWindow::RuntimeStatus runtimeStatus{
+        .journalMode = dbManager->activeJournalMode(),
+        .printerName = printerStatus.deviceName,
+        .printerOnline = printerStatus.isOnline,
+        .syncWorkerRunning = syncWorker->isRunning()
+    };
+
+    vamp9::pos::presentation::MainWindow mainWindow(
+        cartService,
+        productRepository,
+        receiptPrinter,
+        runtimeStatus
+    );
+    mainWindow.show();
+
+    const int exitCode = app.exec();
+
+    syncWorker->stop();
+    logger->info("Application exited cleanly with code " + std::to_string(exitCode));
+    return exitCode;
 }

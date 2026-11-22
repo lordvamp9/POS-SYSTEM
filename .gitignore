@@ -1,7 +1,86 @@
+# ==============================================================================
+# vamp9 POS — Strict .gitignore for Public Commercial Repository
+# ==============================================================================
+
+# CMake & Build Outputs
 build/
-dist/
-*.zip
-.vs/
-*.user
-CMakeSettings.json
 out/
+dist/
+Deploy/
+release/
+debug/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Compiled Binaries, Objects & Libraries
+*.obj
+*.o
+*.d
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.pdb
+*.ilk
+*.exp
+*.idb
+*.res
+*.pch
+
+# Qt Generated Files
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+*_autogen/
+*.pro.user*
+*.qbs.user*
+
+# Installers & Packaging Output
+installer/output/
+*.iss.bak
+*.msi
+*.msix
+*.zip
+*.7z
+*.tar.gz
+
+# Runtime Databases, Local Data & Logs
+data/
+logs/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.log
+*.tmp
+*.temp
+
+# Visual Studio / MinGW / IDEs / OS Files
+.vs/
+.vscode/
+.idea/
+*.sln
+*.vcxproj*
+*.filters
+*.user
+*.suo
+*.ncb
+*.sdf
+*.opensdf
+CMakeSettings.json
+CMakeUserPresets.json
+.DS_Store
+Thumbs.db
+Desktop.ini
